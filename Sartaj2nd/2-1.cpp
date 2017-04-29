@@ -9,3 +9,25 @@
 
 using namespace std;
 
+
+template <typename T>
+int findx(T arr[], int n, T x)
+{
+	for (int i = 0; i < n; ++i)
+	{
+		if (arr[i] == x)
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
+int main()
+{
+	int arr[3] = {1, 5, 7};
+	cout <<	findx<int>(arr, 3, 5) << endl;
+
+	return 0;
+}
