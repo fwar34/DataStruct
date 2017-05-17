@@ -6,14 +6,32 @@ enum ncolor
 	BLACK
 };
 
+template<typename K, typename V>
 struct rbnode
 {
-	rbnode* lchild;
-	rbnode* rchild;
+	rbnode* left;
+	rbnode* right;
 	rbnode* parent;
 	ncolor color;
+	T key;
+	V value;
 };
 
-rbnode* parent(rbnode* x);
-rbnode* leftRotate(rbnode* tree, rbnode* x);
-rbnode* rightRotate(rbnode* tree, rbnode* x);
+template<typename K, typename V>
+rbnode<K, V>* leftRotate(rbnode<K, V>* x);
+
+template<typename K, typename V>
+rbnode<K, V>* rightRotate(rbnode<K, V>* x);
+
+template<typename K, typename V>
+class rbtree
+{
+private:
+	rbtree* root;
+	
+public:
+	void insert(rbnode<K, V>* x);
+	void del(rbnode<K, V>* x);
+	void search(K key);
+	void output();
+};
