@@ -13,7 +13,7 @@ struct rbnode
 	rbnode* right;
 	rbnode* parent;
 	ncolor color;
-	T key;
+	K key;
 	V value;
 };
 
