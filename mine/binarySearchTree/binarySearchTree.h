@@ -22,14 +22,21 @@ private:
 
 public:
 	void insert(K key);
+	void insert_r(K key);
 	void remove(K key);
 	bool contains(K key);
 	bsnode<K>* search(K key);
 	void ptree();
 	bool empty();
-	K min();
-	K max();
+	K& min();
+	K& max();
+
 
 private:
+	bsnode<K>* search(bsnode<K>* tree, K key);
 	void ptree(bsnode<K>* tree);
+	bsnode<K>* min(bsnode<K>* tree);
+	bsnode<K>* max(bsnode<K>* tree);
+	//tree传递指针引用是因为tree是空的话在内部更新tree指针
+	void insert_r(bsnode<K>*& tree, K key);
 };

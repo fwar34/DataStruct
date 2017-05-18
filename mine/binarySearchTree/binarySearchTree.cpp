@@ -7,7 +7,9 @@
 #include <iostream>
 #include "binarySearchTree.h"
 
-template<typename K>
+using namespace std;
+
+template <typename K>
 void bstree<K>::insert(K key)
 {
 	if (!m_root)
@@ -45,62 +47,80 @@ void bstree<K>::insert(K key)
 	}
 }
 
-template<typename K>
-void bstree::remove(K key)
+template <typename K>
+void bstree<K>::insert_r(K key)
 {
-	if (!m_root)
+	insert_r(m_root, key);
+}
+
+template <typename K>
+void bstree<K>::insert_r(bsnode<K>*& tree, K key)
+{
+	if (!tree)
 	{
+		tree = new bsnode<K>();
+		tree->key = key;
 		return;
 	}
 
-	if (m_root->key == key)
+	if (tree->key > key)
 	{
-		m_root = NULL;
-		return;
+		insert_r(tree->left, key);
 	}
-
-	bsnode<K>* y = NULL;
-	bsnode<K>* x = m_root;
-	bsnode<K>* tmp1 = NULL;
-	while (!x)
+	else if (tree->key < key)
 	{
-		y = x;
-		if (x->key > key)
-		{
-			x = x->left;
-		}
-		else if (x->key < key)
-		{
-			x = x->right;
-		}
-		else
-		{
-			break;
-		}
+		insert_r(tree->right, key);
 	}
+}
 
-	bsnode<K>* tmp = NULL;
-	x = y->left;
-	while (!x)
-	{
-		tmp = x;
-		x = x->right;
-	}
+template <typename K>
+void bstree<K>::remove(K key)
+{
+	remove(m_root, key);
+}
 
-	tmp->left = y->left;
-	tmp->right = y->right;
-
+template <typename K>
+void bstree<K>::remove(bsnode<K>* tree, K key)
+{
 
 }
 
-template<typename K>
-void bstree::ptree()
+template <typename K>
+bsnode<K>* bstree<K>::search(K key)
+{
+	return search(m_root, key);
+}
+
+template <typename K>
+void bstree<K>::ptree()
 {
 	ptree(m_root);
 }
 
-template<typename K>
-void bstree::ptree(bsnode<K>* tree)
+template <typename K>
+bsnode<K>* bstree::search(bsnode<K>* tree, K key)
+{
+	if (!tree)
+	{
+		return NULL;
+	}
+
+	if (tree->key == key)
+	{
+		return tree;
+	}
+	else if (tree->key > key)
+	{
+		return search(tree->left);
+	}
+	else
+	{
+		return search(tree->right);
+	}
+}
+
+template <typename K>
+void bstree<K>::ptree(bsnode<K>* tree)
 {
 	if (!tree)
 	{
@@ -110,4 +130,62 @@ void bstree::ptree(bsnode<K>* tree)
 	ptree(tree->left);
 	cout << tree->key << endl;
 	ptree(tree->right);
+}
+
+template <typename K>
+K& bstree<K>::min()
+{
+	bsnode<K>* ret = min(m_root);
+	if (ret)
+	{
+		return ret->key;
+	}
+	else
+	{
+		
+	}
+}
+
+template <typename K>
+K& bstree<K>::max()
+{
+	bsnode<K>* ret = max(m_root);
+	if (ret)
+	{
+		return ret->key;
+	}
+	else
+	{
+
+	}
+}
+
+template<typename K>
+bsnode<K>* bstree<K>::min(bsnode<K>* tree)
+{
+	if (!tree)
+	{
+		return NULL;
+	}
+
+	if (!tree->left)
+	{
+		return tree;
+	}
+
+	return min(tree->left);
+}
+
+template<typename K>
+bsnode<K>* bstree<K>::max(bsnode<K>* tree)
+{
+	if (tree)
+	{
+		while (tree->right)
+		{
+			tree = tree->right;
+		}
+	}	
+
+	return tree;
 }

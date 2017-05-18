@@ -12,8 +12,9 @@
 
 int main()
 {
-	srand(time(NULL));
 	bstree<int> tree;
+	
+	srand(time(NULL));
 	for (int i = 0; i < 100; ++i)
 	{
 		tree.insert(rand());
