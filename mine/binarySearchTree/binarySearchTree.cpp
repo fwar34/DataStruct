@@ -82,7 +82,7 @@ void bstree<K>::remove(K key)
 template <typename K>
 void bstree<K>::remove(bsnode<K>* tree, K key)
 {
-
+	
 }
 
 template <typename K>
