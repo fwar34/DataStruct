@@ -22,6 +22,14 @@ private:
 
 public:
 	void insert(K key);
-	void del(K key);
+	void remove(K key);
+	bool contains(K key);
 	bsnode<K>* search(K key);
+	void ptree();
+	bool empty();
+	K min();
+	K max();
+
+private:
+	void ptree(bsnode<K>* tree);
 };

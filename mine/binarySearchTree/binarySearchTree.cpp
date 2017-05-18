@@ -46,7 +46,7 @@ void bstree<K>::insert(K key)
 }
 
 template<typename K>
-void bstree::del(K key)
+void bstree::remove(K key)
 {
 	if (!m_root)
 	{
@@ -91,4 +91,23 @@ void bstree::del(K key)
 	tmp->right = y->right;
 
 
+}
+
+template<typename K>
+void bstree::ptree()
+{
+	ptree(m_root);
+}
+
+template<typename K>
+void bstree::ptree(bsnode<K>* tree)
+{
+	if (!tree)
+	{
+		return;
+	}
+
+	ptree(tree->left);
+	cout << tree->key << endl;
+	ptree(tree->right);
 }
