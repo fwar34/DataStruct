@@ -2,7 +2,7 @@
     > File Name: binarySearchTree.cpp
     > Author: Feng
     > Created Time: 2017年05月17日 星期三 21时44分14秒
-    > Content: 
+    > Content: bstree
  ************************************************************************/
 #include <iostream>
 #include "binarySearchTree.h"
@@ -21,7 +21,7 @@ void bstree<K>::insert(K key)
 
 	bsnode<K>* x = m_root;
 	bsnode<K>* y = NULL;
-	while (!x)
+	while (x)
 	{
 		y = x;
 		if (x->key > key)
@@ -82,7 +82,119 @@ void bstree<K>::remove(K key)
 template <typename K>
 void bstree<K>::remove(bsnode<K>* tree, K key)
 {
-	
+	if (!tree)
+	{
+		return;
+	}
+
+	bsnode<K>* x = tree;
+	bsnode<K>* y = NULL;
+	bsnode<K>* z = NULL;
+
+	//这个while执行完成后x就指向了与key相等的节点
+	//y就指向了x的父节点（如果x是root节点则y就为空）
+	while (x && x->key != key)
+	{
+		y = x;
+		if (x->key > key)
+		{
+			x = x->left;
+		}
+		else
+		{
+			x = x->right;
+		}
+	}
+
+	//要删除的节点有两个孩子节点
+	if (x->left && x->right)
+	{
+		bsnode<K>* x1 = x->left;
+		bsnode<K>* y1 = x;
+		//这个while执行完成后x1就指向了x的左子树的最大节点
+		//y就指向了x1的父节点
+		while (x1 && x1->right)
+		{
+			y1 = x1;
+			x1 = x1->right;
+		}
+
+		y1->right = NULL;
+		x1->left = x->left;
+		x1->right = x->right;
+
+		//要删除的是root节点
+		if (!y)
+		{
+			m_root = x1;
+		}
+		else
+		{
+			if (x = y->left)
+			{
+				y->left = x1;
+			}
+			else
+			{
+				y->right = x1;
+			}
+		}
+
+		delete x;
+	}
+	//要删除的节点只有一个子节点
+	else if (x->left || x->right)
+	{
+		if (x->left)
+		{
+			z = x->left;
+		}
+		else
+		{
+			z = x->right;
+		}
+
+		//要删除的是root节点
+		if (!y)
+		{
+			m_root = z;
+		}
+		else
+		{
+			if (x = y->left)
+			{
+				y->left = z;
+			}
+			else
+			{
+				y->right = z;
+			}
+		}
+		
+		delete x;
+	}
+	//要删除的节点是个叶子节点
+	else
+	{
+		//要删除的是root节点
+		if (!y)
+		{
+			m_root = NULL;
+		}
+		else
+		{
+			if (x == y->left)
+			{
+				y->left = NULL;
+			}
+			else
+			{
+				y->right = NULL;
+			}
+		}
+		
+		delete x;
+	}
 }
 
 template <typename K>
@@ -109,14 +221,25 @@ bsnode<K>* bstree::search(bsnode<K>* tree, K key)
 	{
 		return tree;
 	}
+
 	else if (tree->key > key)
 	{
-		return search(tree->left);
+		return search(tree->left, key);
 	}
 	else
 	{
-		return search(tree->right);
+		return search(tree->right, key);
 	}
+}
+
+template <typename K>
+bool bstree<K>::contains(K key)
+{
+	if (search(key))
+	{
+		return true;
+	}
+	return false;
 }
 
 template <typename K>
@@ -140,10 +263,6 @@ K& bstree<K>::min()
 	{
 		return ret->key;
 	}
-	else
-	{
-		
-	}
 }
 
 template <typename K>
@@ -153,10 +272,6 @@ K& bstree<K>::max()
 	if (ret)
 	{
 		return ret->key;
-	}
-	else
-	{
-
 	}
 }
 

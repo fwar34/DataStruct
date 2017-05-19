@@ -39,4 +39,5 @@ private:
 	bsnode<K>* max(bsnode<K>* tree);
 	//tree传递指针引用是因为tree是空的话在内部更新tree指针
 	void insert_r(bsnode<K>*& tree, K key);
+	void remove(bsnode<K>* tree, K key);
 };
