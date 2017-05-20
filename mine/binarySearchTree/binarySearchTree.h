@@ -38,6 +38,7 @@ public:
 	void insert(K key);
 	void insert_r(K key);
 	void remove(K key);
+	void remove2(K key);
 	bool contains(K key);
 	bsnode<K>* search(K key);
 	void ptree();
@@ -219,7 +220,7 @@ void bstree<K>::remove(K key)
 		delete del;
 	}
 	//要删除的节点只有一个子节点
-	else if ((del->left && !del->right) || (!del->left && del->right))
+	else if (del->left || del->right)
 	{
 		if (del->left)
 		{
@@ -387,6 +388,49 @@ bsnode<K>* bstree<K>::max(bsnode<K>* tree)
 	}	
 
 	return tree;
+}
+
+template <typename K>
+void bstree<K>::remove2(K key)
+{
+	if (!m_root)
+	{
+		return;
+	}
+
+	bsnode<K>* del = m_root;
+	bsnode<K>* parentdel = NULL;
+	while (del && del->key != key)
+	{
+		parentdel = del;
+		if (del->key > key)
+		{
+			del = del->left;
+		}
+		else
+		{
+			del = del->right;
+		}
+	}
+
+	//没有找到直接退出
+	if (!del)
+	{
+		return;
+	}
+
+	if (del->left && del->right)
+	{
+		bsnode<K>* maxnode = del->right;
+		bsnode<K>* parentmax = del;
+		while (maxnode && maxnode->right)
+		{
+			parentmax = maxnode;
+			maxnode = maxnode->right;
+		}
+		
+			
+	}
 }
 
 #endif
