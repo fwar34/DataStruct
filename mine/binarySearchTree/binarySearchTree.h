@@ -430,6 +430,7 @@ void bstree<K>::remove2(K key)
 		}
 		
 			
+
 	}
 }
 
