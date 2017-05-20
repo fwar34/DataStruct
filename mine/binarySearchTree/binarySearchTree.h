@@ -419,9 +419,10 @@ void bstree<K>::remove2(K key)
 		return;
 	}
 
+	//将要删除的节点有两个子节点的情况转换成有一个或者没有子节点的情况
 	if (del->left && del->right)
 	{
-		bsnode<K>* maxnode = del->right;
+		bsnode<K>* maxnode = del->left;
 		bsnode<K>* parentmax = del;
 		while (maxnode && maxnode->right)
 		{
@@ -429,9 +430,39 @@ void bstree<K>::remove2(K key)
 			maxnode = maxnode->right;
 		}
 		
-			
-
+		del->key = maxnode->key;
+		parentdel = parentmax;
+		del = maxnode;
 	}
+
+	bsnode<K>* childdel = NULL;
+	if (del->left)
+	{
+		childdel = del->left;
+	}
+	else
+	{
+		childdel = del->right;
+	}
+
+	if (del == m_root)
+	{
+		m_root = childdel;
+	}
+    else
+    {
+	    if (del == parentdel->left)
+		{
+			parentdel->left = childdel;
+		}
+		else
+		{
+			parentdel->right = childdel;
+		}
+	}
+
+	--m_elenum;
+	delete del;
 }
 
 #endif

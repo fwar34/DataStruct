@@ -12,11 +12,11 @@
 
 int main()
 {
-	int array[112233];
+	int array[998477];
 	bstree<int> tree;
 	
 	srand(time(NULL));
-	for (int i = 0; i < 112233; ++i)
+	for (int i = 0; i < 998477; ++i)
 	{
 		array[i] = rand();
 		//array[i] = i;
@@ -28,31 +28,38 @@ int main()
 	cout << "max = " << tree.max() << endl;
 	cout << "count = " << tree.count() << endl;
 
-	for (int i = 0; i < 25685; ++i)
+	for (int i = 0; i < 100; ++i)
 	{
 		tree.remove(array[3 * i]);
 		//cout << "remove " << array[1 + i] << ", after remove index " << 1 + i << ", now count = " << tree.count() << endl;
 		//tree.ptree();
 	}
 
-	cout << "contains " << array[1123] << (tree.contains(array[1123]) ? " : true" : " : false") << endl;
+	cout << "contains " << array[11] << (tree.contains(array[11]) ? " : true" : " : false") << endl;
 	cout << "contains " << 99234231 << (tree.contains(99234231) ? " : true" : " : false") << endl;
 
-	int array2[342344];
-	for (int i = 0; i < 342344; ++i)
+	int array2[76765];
+	for (int i = 0; i < 76765; ++i)
 	{
 		array2[i] = rand();
 		tree.insert_r(array2[i]);
 	}
 
-	for (int i = 0; i < 25689; ++i)
+	for (int i = 0; i < 3997; ++i)
 	{
 		tree.remove(array2[3 * i]);
 		//cout << "remove " << array[1 + i] << ", after remove index " << 1 + i << ", now count = " << tree.count() << endl;
 		//tree.ptree();
 	}
 
-	cout << "contains " << array2[1133] << (tree.contains(array2[1123]) ? " : true" : " : false") << endl;
+	for (int i = 0; i < 33473; ++i)
+	{
+		tree.remove2(array[3 * i]);
+		//cout << "remove " << array[1 + i] << ", after remove index " << 1 + i << ", now count = " << tree.count() << endl;
+		//tree.ptree();
+	}
+
+	cout << "contains " << array2[33] << (tree.contains(array2[33]) ? " : true" : " : false") << endl;
 	cout << "contains " << 99234231 << (tree.contains(99234231) ? " : true" : " : false") << endl;
 
 	cout << "begin print, now count = " << tree.count() << endl;
