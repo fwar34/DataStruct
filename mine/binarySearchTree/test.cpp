@@ -27,6 +27,9 @@ int main()
 	cout << "min = " << tree.min() << endl;
 	cout << "max = " << tree.max() << endl;
 	cout << "count = " << tree.count() << endl;
+	cout << "height = " << tree.height() << endl;
+
+	tree.ptreerange(100, 76787780);
 
 	for (int i = 0; i < 100; ++i)
 	{

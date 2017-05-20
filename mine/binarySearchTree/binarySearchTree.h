@@ -7,6 +7,7 @@
     > Content: 二叉搜索树
  ************************************************************************/
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 template <typename K>
@@ -35,6 +36,7 @@ public:
 	{
 	}
 
+	int height();
 	void insert(K key);
 	void insert_r(K key);
 	void remove(K key);
@@ -49,6 +51,7 @@ public:
 	{
 		return m_elenum;
 	}
+	void ptreerange(K begin, K end);
 
 private:
 	bsnode<K>* search(bsnode<K>* tree, K key);
@@ -57,6 +60,8 @@ private:
 	bsnode<K>* max(bsnode<K>* tree);
 	//tree传递指针引用是因为tree是空的话在内部创建新的node的同时更新tree指针
 	void insert_r(bsnode<K>*& tree, K key);
+	int height(bsnode<K>* tree);
+	void ptreerange(bsnode<K>* tree, K begin, K end);
 };
 
 template <typename K>
@@ -465,6 +470,50 @@ void bstree<K>::remove2(K key)
 
 	--m_elenum;
 	delete del;
+}
+
+template <typename K>
+int bstree<K>::height()
+{
+	if (!m_root)
+	{
+		return -1;
+	}
+
+	return std::max(height(m_root->left), height(m_root->right)) + 1;
+}
+
+template <typename K>
+int bstree<K>::height(bsnode<K>* tree)
+{
+	if (!tree)
+	{
+		return -1;
+	}
+	
+	return std::max(height(tree->left), height(tree->right)) + 1;
+}
+
+template <typename K>
+void bstree<K>::ptreerange(K begin, K end)
+{
+	ptreerange(m_root, begin, end);
+}
+
+template <typename K>
+void bstree<K>::ptreerange(bsnode<K>* tree, K begin, K end)
+{
+	if (!tree)
+	{
+		return;
+	}
+
+	ptreerange(tree->left, begin, end);
+	if (tree->key >= begin && tree->key <= end)
+	{
+		cout << tree->key << endl;
+	}
+	ptreerange(tree->right, begin, end);
 }
 
 #endif
