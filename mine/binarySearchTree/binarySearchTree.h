@@ -430,6 +430,8 @@ void bstree<K>::remove2(K key)
 			maxnode = maxnode->right;
 		}
 		
+		//这三行操作完成后就将maxnode节点的值拷贝到del去了，maxnode成了新的要删除的节点del
+		//parentdel成了新的del节点的父节点，这样就将有两个子节点的转换成了一个子节点或者没有自己点的情况
 		del->key = maxnode->key;
 		parentdel = parentmax;
 		del = maxnode;
