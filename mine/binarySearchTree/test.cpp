@@ -29,7 +29,7 @@ int main()
 	cout << "count = " << tree.count() << endl;
 	cout << "height = " << tree.height() << endl;
 
-	tree.ptreerange(100, 76787780);
+	tree.ptreerange(100, 76787);
 
 	for (int i = 0; i < 100; ++i)
 	{
