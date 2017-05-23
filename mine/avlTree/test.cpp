@@ -7,7 +7,7 @@
 
 #include <iostream>
 #include <time.h>
-#include "avlTree.h"
+#include "avlTree_r.h"
 using namespace std;
 
 int main()
