@@ -15,22 +15,24 @@ int main()
 	avltree<int> tree;
 
 	srand(time(NULL));
-	int array[55555];
-	for (int i = 0; i < 55555; ++i)
+	int* array = new int[1000011];
+	for (int i = 0; i < 1000011; ++i)
 	{
 		array[i] = rand();
-		tree.insert2(array[i]);
+		tree.insert(array[i]);
 	}
+	delete[] array;
 
 	cout << "size  = " << tree.size() << endl;
 	cout << "height = " << tree.height() << endl;
 
-	int array2[100];
-	for (int i = 0; i < 100; ++i)
+	int* array2 = new int[1078780];
+	for (int i = 0; i < 1078780; ++i)
 	{
 		array2[i] = rand();
 		tree.insert2(array2[i]);
 	}
+	delete[] array2;
 
 	cout << "size  = " << tree.size() << endl;
 	cout << "height = " << tree.height() << endl;

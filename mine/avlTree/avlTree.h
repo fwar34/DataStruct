@@ -68,7 +68,7 @@ int avltree<K>::height(avlnode<K>* tree)
 	{
 		return -1;
 	}
-	return std::max(height(tree->left), height(tree->right)) + 1;
+	return tree->height;
 }
 
 template <typename K>
@@ -149,11 +149,11 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 		{
 			if (key < tree->left->key)
 			{
-				llrotate(tree);
+				tree = llrotate(tree);
 			}
 			else
 			{
-				lrrotate(tree);
+				tree = lrrotate(tree);
 			}
 		}
 		else
@@ -171,11 +171,11 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 		{
 			if (key > tree->right->key)
 			{
-				rrrotate(tree);
+				tree = rrrotate(tree);
 			}
 			else
 			{
-				rlrotate(tree);
+				tree = rlrotate(tree);
 			}
 		}	
 		else
@@ -187,7 +187,7 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 	else
 	{
 		//key相等的时候啥都不做
-		std::cout << "key " << key << " exist" << std::endl;
+		//std::cout << "key " << key << " exist" << std::endl;
 	}
 }
 
@@ -220,11 +220,11 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 		{
 			if (key < tree->left->key)
 			{
-				llrotate(tree);
+				tree = llrotate(tree);
 			}
 			else
 			{
-				lrrotate(tree);
+				tree = lrrotate(tree);
 			}
 		}
 		else
@@ -240,11 +240,11 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 		{
 			if (key > tree->right->key)
 			{
-				rrrotate(tree);
+				tree = rrrotate(tree);
 			}
 			else
 			{
-				rlrotate(tree);
+				tree = rlrotate(tree);
 			}
 		}
 		else
@@ -256,8 +256,10 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 	else
 	{
 		//key相等的时候啥都不做
-		std::cout << "key " << key << " exist" << std::endl;
+		//std::cout << "key " << key << " exist" << std::endl;
 	}
+
+	return tree;
 }
 
 template <typename K>
