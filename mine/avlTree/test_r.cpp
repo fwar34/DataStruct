@@ -6,7 +6,6 @@
  ************************************************************************/
 
 #include <iostream>
-#include <time.h>
 #include "avlTree_r.h"
 using namespace std;
 
@@ -14,7 +13,7 @@ int main()
 {
 	avltree<int> tree;
 
-	srand(time(NULL));
+	srand(52554);
 	int* array = new int[1000011];
 	for (int i = 0; i < 1000011; ++i)
 	{
