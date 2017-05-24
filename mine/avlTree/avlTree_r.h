@@ -32,6 +32,7 @@ public:
 	void insert(K key);
 	void insert2(K key);
 	void remove(K key);
+	void remove2(K key);
 	void makeempty();
 	bool empty();
 	int height();
@@ -45,6 +46,7 @@ private:
 	//insert2和insert1不同的地方是insert1传递的引用，insert2返回的是节点指针
 	avlnode<K>* insert2(avlnode<K>* tree, K key);
 	avlnode<K>* remove(avlnode<K>* tree, K key);
+	avlnode<K>* remove2(avlnode<K>* tree, K key);
 	avlnode<K>* llrotate(avlnode<K>* node);
 	avlnode<K>* rrrotate(avlnode<K>* node);
 	avlnode<K>* lrrotate(avlnode<K>* node);
@@ -368,6 +370,117 @@ avlnode<K>* avltree<K>::remove(avlnode<K>* tree, K key)
 
 			m_nodecount--;
 			delete y;
+		}
+	}
+
+	return tree;
+}
+
+template <typename K>
+void avltree<K>::remove2(K key)
+{
+	remove2(m_root, key);
+}
+
+template <typename K>
+avlnode<K>* avltree<K>::remove2(avlnode<K>* tree, K key)
+{
+	if (!tree)
+	{
+		return NULL;
+	}
+	
+	if (tree->key > key)
+	{
+		tree->left = remove2(tree->left, key);
+		if (height(tree->left) - height(tree->right) == -2)
+		{
+			if (height(tree->right->right) > height(tree->right->left))
+			{
+				tree = rrrotate(tree);
+			}
+			else
+			{
+				tree = rlrotate(tree);
+			}
+		}
+		else
+		{
+			tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+		}
+	}
+	else if (tree->key < key)
+	{
+		tree->right = remove2(tree->right, key);
+		if (height(tree->left) - height(tree->right) == 2)
+		{
+			if (height(tree->left->left) > height(tree->left->right))
+			{
+				tree = llrotate(tree);
+			}
+			else
+			{
+				tree = lrrotate(tree);
+			}
+		}
+		else
+		{
+			tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+		}
+	}
+	else
+	{
+		if (tree->left && tree->right)
+		{
+			// 如果tree的左子树比右子树高；
+			// 则(01)找出tree的左子树中的最大节点
+			//   (02)将该最大节点的值赋值给tree。
+			//   (03)删除该最大节点。
+			// 这类似于用"tree的左子树中最大节点"做"tree"的替身；
+			// 采用这种方式的好处是：删除"tree的左子树中最大节点"之后，AVL树仍然是平衡的。
+			if (height(tree->left) > height(tree->right))
+			{
+				avlnode<K>* x = tree->left;
+				while (x->right)
+				{
+					x = x->right;
+				}
+				
+				tree->key = x->key;
+				tree->left = remove2(tree->left, x->key);
+			}
+			else
+			{
+				// 如果tree的左子树不比右子树高(即它们相等，或右子树比左子树高1)
+				// 则(01)找出tree的右子树中的最小节点
+				//   (02)将该最小节点的值赋值给tree。
+				//   (03)删除该最小节点。
+				// 这类似于用"tree的右子树中最小节点"做"tree"的替身；
+				// 采用这种方式的好处是：删除"tree的右子树中最小节点"之后，AVL树仍然是平衡的。
+				avlnode<K>* y = tree->right;
+				while (y->left)
+				{
+					y = y->left;
+				}
+				tree->key = y->key;
+				tree->right = remove2(tree->right, y->key);
+			}
+			tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+		}
+		else
+		{
+			avlnode<K>* z = tree;
+			if (tree->left)
+			{
+				tree = tree->left;
+			}
+			else
+			{
+				tree = tree->right;
+			}
+
+			m_nodecount--;
+			delete z;
 		}
 	}
 
