@@ -2,7 +2,7 @@
 > File Name: avlTree.h
 > Author: Feng
 > Created Time: 2017年05月22日 星期一 13时47分38秒
-> Content: avltree 自底向上，添加删除递归实现
+> Content: avltree 添加删除递归实现
 ************************************************************************/
 #pragma once
 
