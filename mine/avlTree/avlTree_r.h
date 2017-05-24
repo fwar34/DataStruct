@@ -1,9 +1,9 @@
 /*************************************************************************
-    > File Name: avlTree.h
-    > Author: Feng
-    > Created Time: 2017年05月22日 星期一 13时47分38秒
-    > Content: avltree 自底向上，添加删除递归实现
- ************************************************************************/
+> File Name: avlTree.h
+> Author: Feng
+> Created Time: 2017年05月22日 星期一 13时47分38秒
+> Content: avltree 自底向上，添加删除递归实现
+************************************************************************/
 #pragma once
 
 #include <algorithm>
@@ -78,7 +78,7 @@ avlnode<K>* avltree<K>::llrotate(avlnode<K>* node)
 	{
 		return NULL;
 	}
-	
+
 	avlnode<K>* x = node->left;
 	node->left = x->right;
 	x->right = node;
@@ -139,7 +139,7 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 		++m_nodecount;
 		return;
 	}
-	
+
 	if (tree->key > key)
 	{
 		insert(tree->left, key);
@@ -147,6 +147,8 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 		//这里不能直接用height(tree) == 2来判断，因为height(tree)这时候不准，还没有重新计算
 		if (height(tree->left) - height(tree->right) == 2)
 		{
+			//这里也可以用if (height(tree->left->left) > height(tree->left->right))来判断
+			//if (height(tree->left->left) > height(tree->left->right))
 			if (key < tree->left->key)
 			{
 				tree = llrotate(tree);
@@ -169,6 +171,8 @@ void avltree<K>::insert(avlnode<K>*& tree, K key)
 		//这里不能直接用height(tree) == -2来判断，因为height(tree)这时候不准，还没有重新计算
 		if (height(tree->left) - height(tree->right) == -2)
 		{
+			//这里也可以用if (height(tree->right->right) > height(tree->right->left))来判断
+			//if (height(tree->right->right) > height(tree->right->left))
 			if (key > tree->right->key)
 			{
 				tree = rrrotate(tree);
@@ -212,12 +216,14 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 		++m_nodecount;
 		return tree;
 	}
-	
+
 	if (tree->key > key)
 	{
 		tree->left = insert2(tree->left, key);
 		if (height(tree->left) - height(tree->right) == 2)
 		{
+			//这里也可以用if (height(tree->left->left) > height(tree->left->right))来判断
+			//if (height(tree->left->left) > height(tree->left->right))
 			if (key < tree->left->key)
 			{
 				tree = llrotate(tree);
@@ -238,6 +244,8 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 		tree->right = insert2(tree->right, key);
 		if (height(tree->left) - height(tree->right) == -2)
 		{
+			//这里也可以用if (height(tree->right->right) > height(tree->right->left))来判断
+			//if (height(tree->right->right) > height(tree->right->left))
 			if (key > tree->right->key)
 			{
 				tree = rrrotate(tree);
@@ -263,11 +271,105 @@ avlnode<K>* avltree<K>::insert2(avlnode<K>* tree, K key)
 }
 
 template <typename K>
+void avltree<K>::remove(K key)
+{
+	remove(m_root, key);
+}
+
+template <typename K>
 avlnode<K>* avltree<K>::remove(avlnode<K>* tree, K key)
 {
 	if (!tree)
 	{
 		return NULL;
 	}
-	
+
+	if (tree->key > key)
+	{
+		tree->left = remove(tree->left, key);
+		if (height(tree->left) - height(tree->right) == -2)
+		{
+			//因为height(tree->left) - height(tree->right) == -2所以tree肯定有右儿子（tree->right肯定不为空）
+			if (height(tree->right->right) > height(tree->right->left))
+			{
+				tree = rrrotate(tree);
+			}
+			else
+			{
+				tree = rlrotate(tree);
+			}
+		}
+		else
+		{
+			tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+		}
+	}
+	else if (tree->key < key)
+	{
+		tree->right = remove(tree->right, key);
+		if (height(tree->left) - height(tree->right) == 2)
+		{
+			//因为height(tree->left) - height(tree->right) == 2所以tree肯定有左儿子（tree->left肯定不为空）
+			if (height(tree->left->left) > height(tree->left->right))
+			{
+				tree = llrotate(tree);
+			}
+			else
+			{
+				tree = lrrotate(tree);
+			}
+		}
+		else
+		{
+			tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+		}
+	}
+	else
+	{
+		//要删除的节点有两个儿子节点
+		if (tree->left && tree->right)
+		{
+			avlnode<K>* x = tree->left;
+			//while执行完成x指向了tree的左子树的最大节点
+			while (x->right)
+			{
+				x = x->right;
+			}
+			tree->key = x->key;
+			//先找出tree的左子树的最大节点，将tree的左子树最大节点的值拷贝到tree，再删除tree的左子树的最大节点
+			tree->left = remove(tree->left, x->key);
+			if (height(tree->left) - height(tree->right) == -2)
+			{
+				if (height(tree->right->right) > height(tree->right->left))
+				{
+					tree = rrrotate(tree);
+				}
+				else
+				{
+					tree = rlrotate(tree);
+				}
+			}
+			else
+			{
+				tree->height = std::max(height(tree->left), height(tree->right)) + 1;
+			}
+		}
+		else
+		{
+			avlnode<K>* y = tree;
+			if (tree->left)
+			{
+				tree = tree->left;
+			}
+			else
+			{
+				tree = tree->right;
+			}
+
+			m_nodecount--;
+			delete y;
+		}
+	}
+
+	return tree;
 }

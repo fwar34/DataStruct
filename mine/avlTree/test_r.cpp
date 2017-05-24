@@ -21,10 +21,19 @@ int main()
 		array[i] = rand();
 		tree.insert(array[i]);
 	}
-	delete[] array;
-
+	cout << "------------------first insert-----------------------" << endl;
 	cout << "size  = " << tree.size() << endl;
 	cout << "height = " << tree.height() << endl;
+
+	for (int i = 0; i < 111117; ++i)
+	{
+		tree.remove(array[i * 3]);
+	}
+	cout << "------------------first remove-----------------------" << endl;
+	cout << "size  = " << tree.size() << endl;
+	cout << "height = " << tree.height() << endl;
+
+	delete[] array;
 
 	int* array2 = new int[1078780];
 	for (int i = 0; i < 1078780; ++i)
@@ -32,10 +41,19 @@ int main()
 		array2[i] = rand();
 		tree.insert2(array2[i]);
 	}
-	delete[] array2;
-
+	cout << "------------------second insert-----------------------" << endl;
 	cout << "size  = " << tree.size() << endl;
 	cout << "height = " << tree.height() << endl;
+
+	for (int i = 0; i < 111113; ++i)
+	{
+		tree.remove(array2[i * 3]);
+	}
+	cout << "------------------second remove-----------------------" << endl;
+	cout << "size  = " << tree.size() << endl;
+	cout << "height = " << tree.height() << endl;
+
+	delete[] array2;
 	
 	return 0;
 }
