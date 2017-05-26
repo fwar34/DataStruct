@@ -6,6 +6,7 @@
  ************************************************************************/
 
 #include <iostream>
+#include <stack>
 
 using namespace std;
 
@@ -28,7 +29,6 @@ private:
 	avlnode<K>* m_root;
 	size_t m_size;
 
-	void remove(avlnode<K>* tree, K key);
 	void llrotate(avlnode<K>* pa, avlnode<K>* a, avlnode<K>* ca);
 	void rrrotate(avlnode<K>* pa, avlnode<K>* a, avlnode<K>* ca);
 	void lrrotate(avlnode<K>* pa, avlnode<K>* a, avlnode<K>* ca);
@@ -195,7 +195,6 @@ void avltree<K>::fixbf(avlnode<K>* a, avlnode<K>* r, K key)
 			a = a->right;
 		}
 	}
-	
 }
 
 template <typename K>
@@ -267,7 +266,7 @@ void avltree<K>::insert(K key)
 				else
 				{
 					//LR
-					fixbf(b->right, r, key);
+					fixbf(b->right, r, key);		//这里必须先修正bf，在lrrotate中要按照修正后x的bf给a和b节点重新计算bf
 					lrrotate(pa, a, b);
 				}
 			}
@@ -290,7 +289,7 @@ void avltree<K>::insert(K key)
 				if (b->key > key)
 				{
 					//RL
-					fixbf(b->left, r, key);
+					fixbf(b->left, r, key);		//这里必须先修正bf，在lrrotate中要按照修正后x的bf给a和b节点重新计算bf
 					rlrotate(pa, a, b);
 				}
 				else
@@ -305,5 +304,172 @@ void avltree<K>::insert(K key)
 	else
 	{
 		fixbf(m_root, r, key);
+	}
+}
+
+template <typename K>
+void avltree<K>::remove(K key)
+{
+	stack<avlnode<K>*> stk;
+
+	avlnode<K>* p = m_root;
+	while (p && p->key != key)
+	{
+		stk.push(p);
+		if (p->key > key)
+		{
+			p = p->left;
+		}
+		else
+		{
+			p = p->right;
+		}
+	}
+	
+	//没找到key相等的节点直接退出
+	if (!p)
+	{
+		return;
+	}
+	
+	if (p->left && p->right)
+	{
+		stk.push(p);
+		avlnode<K>* dest = p->left;
+		while (dest->right)
+		{
+			stk.push(dest);
+			dest = dest->right;
+		}
+		
+		p->key = dest->key;
+		p = dest;
+	}
+
+	K pkey = p->key;
+	
+	avlnode<K>* x = NULL;
+	if (p->left)
+	{
+		x = p->left;
+	}
+	else
+	{
+		x = p->right;
+	}
+
+	if (p == m_root)
+	{
+		m_root = x;
+		m_size--;
+		delete p;
+		return;
+	}
+	else
+	{
+		if (stk.top()->left == p)
+		{
+			stk.top()->left = x;
+		}
+		else
+		{
+			stk.top()->right = x;
+		}
+	}
+	m_size--;
+	delete p;
+
+	avlnode<K>* q = NULL;
+	q = stk.top();
+	stk.pop();
+
+	while (q)
+	{
+		//这里一定是>=不是>，等于是给要删除的节点有两
+		//个节点儿子节点的情况准备的，因为把左边儿子的最大值赋值给了p节点
+		if (q->key >= pkey)		
+		{
+			q->bf--;
+			if (q->bf == 0)
+			{
+				//q的高度改变了，但是q还是平衡的，继续往根节点走		
+				if (stk.empty())
+				{
+					return;
+				}
+				q = stk.top();
+				stk.pop();
+			}
+			else if (q->bf == -1)
+			{
+				//q的高度未改变，直接退出
+				return;
+			}
+			else	//q->bf == -2
+			{
+				//q的高度改变了并且q不平衡了，然后根据q的右儿子节点的bf来确定下步
+				avlnode<K>* b = q->right;
+				avlnode<K>* pa = NULL;
+				if (!stk.empty())
+				{
+					pa = stk.top();
+					stk.pop();
+				}
+				
+				switch (b->bf)
+				{
+				case 0:
+					rrrotate(pa, q, b);
+					q->bf = -1;		// q is A node
+					b->bf = 1;
+					return;
+				case 1:
+					rlrotate(pa, q, b);
+					break;
+				case -1:
+					rrrotate(pa, q, b);
+				}
+				q = pa;
+			}
+		}
+		else
+		{
+			q->bf++;
+			if (q->bf == 0)
+			{
+				if (stk.empty())
+				{
+					return;
+				}
+				
+				q = stk.top();
+				stk.pop();
+			}
+			else if (q->bf == 1)
+			{
+				return;
+			}
+			else	//q->bf == 2
+			{
+				avlnode<K>* b = q->left;
+				avlnode<K>* pa = NULL;
+				pa = stk.top();
+				stk.pop();
+				switch (b->bf)
+				{
+				case 0:
+					llrotate(pa, q, b);
+					q->bf = 1;
+					b->bf = -1;
+					return;
+				case 1:
+					llrotate(pa, q, b);
+					break;
+				case -1:
+					lrrotate(pa, q, b);
+				}
+				q = pa;
+			}
+		}
 	}
 }
