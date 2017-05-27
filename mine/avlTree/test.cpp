@@ -63,6 +63,23 @@ int main()
 		<< tv6.tv_sec * 1000000 + tv6.tv_usec - tv5.tv_sec * 1000000 - tv5.tv_usec << endl;
 	cout << "size  = " << tree.size() << endl;*/
 
+	avltree<int> tree2;
+	int array2[10] = {1, 3, -8, 9, 7, 6, 9, 10, 90, 4};
+	for (int i = 0; i < 10; ++i)
+	{
+		tree2.insert(array2[i]);
+		tree2.levelout();
+		cout << "---------------------------------------" << endl;
+	}
+
+	for (int i = 0; i < 6; ++i)
+	{
+		tree2.remove(array2[i]);
+		tree2.levelout();
+		cout << "---------------------------------------" << endl;
+	}
+	
+
 	return 0;
 }
 

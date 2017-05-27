@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <stack>
+#include <queue>
 
 using namespace std;
 
@@ -47,6 +48,7 @@ public:
 	}
 	void insert(K key);
 	void remove(K key);
+	void levelout();
 };
 
 template <typename K>
@@ -470,6 +472,49 @@ void avltree<K>::remove(K key)
 				}
 				q = pa;
 			}
+		}
+	}
+}
+
+template <typename K>
+void avltree<K>::levelout()
+{
+	int curcount = 1;
+	int nextcount = 0;
+	queue<avlnode<K>*> q;
+
+	if (!m_root)
+	{
+		return;
+	}
+
+	avlnode<K>* x = NULL;
+
+	q.push(m_root);
+	while (!q.empty())
+	{
+		x = q.front();
+		q.pop();
+		curcount--;
+		cout << x->key << " ";
+
+		if (x->left)
+		{
+			q.push(x->left);
+			nextcount++;
+		}
+		
+		if (x->right)
+		{
+			q.push(x->right);
+			nextcount++;
+		}
+		
+		if (!curcount)
+		{
+			cout << endl;
+			curcount = nextcount;
+			nextcount = 0;
 		}
 	}
 }
