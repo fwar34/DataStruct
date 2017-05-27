@@ -9,4 +9,4 @@ debug:
 	g++ -o avl2 -g avl2.cpp
 
 clean:
-	rm test test_r
+	rm test test_r avl2
