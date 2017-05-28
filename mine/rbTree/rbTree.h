@@ -37,6 +37,9 @@ private:
 	size_t m_size;
 
 public:
+	rbtree() : m_root(NULL), m_size(0)
+	{
+	}
 	void insert(K key);
 	void remove(K key);
 
@@ -122,6 +125,14 @@ void rbtree<K>::insert(K key)
 		}
 	}
 
+	if (!parentdest)
+	{
+		m_root = new rbnode<K>(key);
+		m_root->color = BLACK;
+		m_size++;
+		return;
+	}
+
 	dest = new rbnode<K>(key);
 	if (parentdest->key > key)
 	{
@@ -132,6 +143,7 @@ void rbtree<K>::insert(K key)
 		parentdest->right = dest;
 	}
 	dest->parent = parentdest;
+	m_size++;
 	
 
 	while (true)
@@ -151,13 +163,12 @@ void rbtree<K>::insert(K key)
 		else
 		{
 			//case3 XYr（即LLr RRr LRr RLr）
-			if (uncle(dest)->color == RED)
+			if (uncle(dest) && uncle(dest)->color == RED)
 			{
 				dest->parent->color = BLACK;
 				uncle(dest)->color = BLACK;
 				grandparent(dest)->color = RED;
 				dest = grandparent(dest);
-				continue;
 			}
 			else
 			{
@@ -181,7 +192,8 @@ void rbtree<K>::insert(K key)
 					//case5 RLb
 					if (dest == dest->parent->left)
 					{
-						
+						llrotate(dest->parent);
+						dest = dest->right;
 					}
 					else	//case5 RRb
 					{
