@@ -401,7 +401,7 @@ void rbtree<K>::PrintNode(vector<rbnode<K>*>& nodes, int level, int max_level)
 	{  
 		if (*it != NULL)
 		{  
-			cout << (*it)->key;  
+			cout << (*it)->key << "," << ((*it)->color == RED ? "R" : "B");  
 			new_nodes.push_back((*it)->left);  
 			new_nodes.push_back((*it)->right);  
 		}  
