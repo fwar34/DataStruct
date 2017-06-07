@@ -305,6 +305,7 @@ void rbtree<K>::insert(K key)
 	dest->parent = parentdest;
 	m_size++;
 	
+	//插入完成，下来重新调整插入后的红黑树
 	while (true)
 	{
 		//case1 空树
@@ -366,6 +367,188 @@ void rbtree<K>::insert(K key)
 			}
 		}
 	}	
+}
+
+template <typename K>
+void rbtree<K>::remove(K key)
+{
+	rbcolor ycolor;
+	rbnode<K>* parent = NULL;
+	rbnode<K>* brother = NULL;
+	rbnode<K>* dest = m_root;
+	while (dest && dest->key != key)
+	{
+		if (dest->key > key)
+		{
+			dest = dest->left;
+		}
+		else
+		{
+			dest = dest->right;
+		}
+	}
+	
+	//没有找到直接退出
+	if (!dest)
+	{
+		return;
+	}
+
+	//将要删除节点有两个儿子节点的情况转换成有一个儿子节点或者没有儿子节点的情况
+	if (dest->left && dest->right)
+	{
+		rbnode<K>* y = dest->right;
+		//这个while完成后y最终指向了真正要删除的节点（即替换原来要删除的节点的节点）
+		while (y->left)
+		{
+			y = y->left;
+		}
+		
+		ycolor = y->color;
+		dest->key = y->key;
+		dest = y;	//重新指定要删除的节点
+	}
+
+	//如果最终要删除节点是root，那肯定这棵红黑树只有一个根节点，删除后直接退出
+	if (dest == m_root)
+	{
+		//这时候x肯定是NULL
+		m_root = NULL;
+		delete dest;
+		m_size--;
+		return;
+	}
+
+	//没有子节点归结到只有一个子节点的情况中去（只有一个为NULL的子节点），所以x有可能为空
+	rbnode<K>* x = NULL;
+	if (dest->left)
+	{
+		x = dest->left;
+	}
+	else
+	{
+		x = dest->right;
+	}
+	parent = dest->parent;
+
+	if (dest == dest->parent->left)
+	{
+		dest->parent->left = x;
+	}
+	else
+	{
+		dest->parent->right = x;
+	}
+
+	if (x)
+	{
+		x->parent = dest->parent;
+	}
+	delete dest;
+	m_size--;
+	
+	//删除节点完成，开始调整红黑树，只有最终要删除的节点为黑色的时候才需要调整
+	if (ycolor == BLACK)
+	{
+		if (x && x->color == RED)
+		{
+			//x的颜色为红色的话直接把x设置成黑色（黑色增加了一个）就恢复了平衡
+			x->color = BLACK;
+		}
+		else
+		{
+			//终止的条件是x不为root且x的颜色为黑色（NULL视为黑色）
+			//（因为x颜色为黑色时候以x为根的树黑色节点减少了一个，并且需要多次调整）
+			while (x != m_root && (!x || x->color == BLACK))
+			{
+				if (x == parent->left)
+				{
+					brother = parent->right;
+					//case1 x兄弟w颜色是红色（隐含着x的父节点和w的两个儿子节点肯定是黑色）
+					//这里brother肯定不为NULL，因为ycolor是黑色，即表示最终删除节点dest兄
+					//弟节点（即后来x节点替换了）肯定不为NULL
+					if (brother->color == RED)
+					{
+						brother->color = BLACK;
+						parent->color = RED;
+						rrrotate(parent);
+						brother = parent->right;
+					}
+					else
+					{
+						//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
+						if (brother->left->color == BLACK && brother->right->color == BLACK)
+						{
+							brother->color = RED;
+							x = parent;
+							parent = x->parent;
+						}
+						else
+						{
+							//case3 x兄弟w颜色是黑色而且w的左儿子颜色是红色右儿子颜色是黑色
+							if (!brother->right || brother->right->color == BLACK)
+							{
+								brother(x)->left->color = BLACK;
+								brother(x)->right->color = RED;
+								llrotate(brother(x));
+							}
+
+							//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
+							if (brother(x)->color == BLACK && brother(x)->right->color == RED)
+							{
+								brother(x)->color = x->parent->color;
+								x->parent->color = BLACK;
+								brother(x)->right->color = BLACK;
+								rrrotate(x->parent);
+								x = m_root;
+							}
+						}
+					}
+
+													
+				}
+				else
+				{
+					//case1 x兄弟w颜色是红色（隐含着x的父节点和w的两个儿子节点肯定是黑色）
+					if (brother(x)->color == RED)
+					{
+						brother(x)->color = BLACK;
+						x->parent->color = RED;
+						llrotate(x->parent);
+					}
+					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
+					if (brother(x)->color == BLACK && brother(x)->left->color == BLACK && brother(x)->right->color == BLACK)
+					{
+						brother(x)->color = RED;
+						x = x->parent;
+					}
+
+					//case3 x兄弟w颜色是黑色而且w的左儿子颜色是黑色右儿子颜色是红色
+					if (brother(x)->color == BLACK && brother(x)->left->color == BLACK && brother(x)->right->color == RED)
+					{
+						brother(x)->left->color = RED;
+						brother(x)->right->color = BLACK;
+						rrrotate(brother(x));
+					}
+
+					//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
+					if (brother(x)->color == BLACK && brother(x)->left->color == RED)
+					{
+						brother(x)->color = x->parent->color;
+						x->parent->color = BLACK;
+						brother(x)->left->color = BLACK;
+						llrotate(x->parent);
+						x = m_root;
+					}
+				}
+			}
+
+			if (x)
+			{
+				x->color = BLACK;
+			}
+		}
+	}
 }
 
 
