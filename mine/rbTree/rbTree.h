@@ -474,10 +474,10 @@ void rbtree<K>::remove(K key)
 						rrrotate(parent);
 						brother = parent->right;
 					}
-					else
-					{
+		
 						//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
-						if (brother->left->color == BLACK && brother->right->color == BLACK)
+						if ((!brother->left || brother->left->color == BLACK) 
+							&& (!brother->right || brother->right->color == BLACK))
 						{
 							brother->color = RED;
 							x = parent;
@@ -488,57 +488,78 @@ void rbtree<K>::remove(K key)
 							//case3 x兄弟w颜色是黑色而且w的左儿子颜色是红色右儿子颜色是黑色
 							if (!brother->right || brother->right->color == BLACK)
 							{
-								brother(x)->left->color = BLACK;
-								brother(x)->right->color = RED;
-								llrotate(brother(x));
-							}
+								if (brother->left)
+								{
+									brother->left->color = BLACK;
+								}
+								brother->color = RED;
+								llrotate(brother);
+								brother = parent->right;
+							}							
 
 							//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
-							if (brother(x)->color == BLACK && brother(x)->right->color == RED)
-							{
-								brother(x)->color = x->parent->color;
-								x->parent->color = BLACK;
-								brother(x)->right->color = BLACK;
-								rrrotate(x->parent);
+							/*if (brother && brother->right->color == RED)
+							{*/
+								//剩余的情况肯定是case4
+								//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
+								brother->color = parent->color;
+								parent->color = BLACK;
+								if (brother->right)
+								{
+									brother->right->color = BLACK;
+								}
+								rrrotate(parent);
 								x = m_root;
-							}
+							//}
 						}
-					}
-
-													
 				}
 				else
 				{
+					brother = parent->left;
 					//case1 x兄弟w颜色是红色（隐含着x的父节点和w的两个儿子节点肯定是黑色）
-					if (brother(x)->color == RED)
+					if (brother->color == RED)
 					{
-						brother(x)->color = BLACK;
-						x->parent->color = RED;
-						llrotate(x->parent);
+						brother->color = BLACK;
+						parent->color = RED;
+						llrotate(parent);
+						brother = parent->left;
 					}
 					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
-					if (brother(x)->color == BLACK && brother(x)->left->color == BLACK && brother(x)->right->color == BLACK)
+					if ((!brother->left || brother->left->color == BLACK) 
+						&& (!brother->right || brother->right->color == BLACK))
 					{
-						brother(x)->color = RED;
-						x = x->parent;
+						brother->color = RED;
+						x = parent;
+						parent = x->parent;
 					}
-
-					//case3 x兄弟w颜色是黑色而且w的左儿子颜色是黑色右儿子颜色是红色
-					if (brother(x)->color == BLACK && brother(x)->left->color == BLACK && brother(x)->right->color == RED)
+					else
 					{
-						brother(x)->left->color = RED;
-						brother(x)->right->color = BLACK;
-						rrrotate(brother(x));
-					}
+						//case3 x兄弟w颜色是黑色而且w的左儿子颜色是黑色右儿子颜色是红色
+						if (!brother->left || brother->left->color == BLACK)
+						{
+							if (!brother->left)
+							{
+								brother->left->color = RED;
+							}
+							brother->color = BLACK;
+							rrrotate(brother);
+							brother = parent->left;
+						}
 
-					//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
-					if (brother(x)->color == BLACK && brother(x)->left->color == RED)
-					{
-						brother(x)->color = x->parent->color;
-						x->parent->color = BLACK;
-						brother(x)->left->color = BLACK;
-						llrotate(x->parent);
-						x = m_root;
+						//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
+						//if (brother->left->color == RED)
+						//{
+							//剩余的情况肯定是case4
+							//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
+							brother->color = parent->color;
+							parent->color = BLACK;
+							if (brother->left)
+							{
+								brother->left->color = BLACK;
+							}
+							llrotate(parent);
+							x = m_root;
+						//}
 					}
 				}
 			}
