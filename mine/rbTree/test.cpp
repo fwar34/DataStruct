@@ -16,8 +16,8 @@ int main()
 	rbtree<int> tree;
 	srand(time(NULL));
 
-	int* array = new int[300];
-	for (int i = 0; i < 300; ++i)
+	int* array = new int[3000];
+	for (int i = 0; i < 3000; ++i)
 	{
 		array[i] = rand();
 	}
@@ -27,7 +27,7 @@ int main()
 	cout << "-------------------begin1-----------------" << endl;
 	struct timeval tv1, tv2;
 	gettimeofday(&tv1, NULL);
-	for (int i = 0; i < 300; ++i)
+	for (int i = 0; i < 3000; ++i)
 	{
 		tree.insert(array[i]);
 		//tree.printtree();
@@ -41,15 +41,16 @@ int main()
 	cout << "size  = " << tree.size() << " height = " << tree.height() << endl;	
 
 	//tree.levelout();
-	tree.PrintBinaryTree();
+	//tree.PrintBinaryTree();
+	tree.printtree();
 
 	cout << "-------------------begin2-----------------" << endl;
 	struct timeval tv3, tv4;
 	gettimeofday(&tv3, NULL);
-	for (int i = 0; i < 300; ++i)
+	for (int i = 0; i < 1111; ++i)
 	{
 		//cout << "remove " << array[i] << endl;
-		tree.remove(array[i]);
+		tree.remove(array[i * 2 + 1]);
 		//tree.PrintBinaryTree();
 		//cout << "----------------------------------------" << endl;
 		//tree.levelout();
@@ -60,7 +61,9 @@ int main()
 		<< tv4.tv_sec * 1000000 + tv4.tv_usec - tv3.tv_sec * 1000000 - tv3.tv_usec << endl;
 	cout << "size  = " << tree.size() << " height = " << tree.height() << endl;	
 
-	tree.PrintBinaryTree();
+	//tree.PrintBinaryTree();
+	tree.printtree();
+	cout << "size  = " << tree.size() << " height = " << tree.height() << endl;	
 
 	return 0;
 }
