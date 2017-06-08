@@ -476,6 +476,9 @@ void rbtree<K>::remove(K key)
 						brother = parent->right;
 					}
 
+					//brother的儿子节点颜色总共有3种情况（两黑、两红、一红一黑），
+					//两黑（两个NULL、两个黑色、一NULL一黑），一红一黑（一红一NULL和一红一黑），两红（两红）
+
 					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（NULL视为黑色）
 					if ((!brother->left || brother->left->color == BLACK) 
 						&& (!brother->right || brother->right->color == BLACK))
@@ -484,7 +487,7 @@ void rbtree<K>::remove(K key)
 						x = parent;
 						parent = x->parent;
 					}
-					else
+					else	
 					{
 						//case3 x兄弟w颜色是黑色而且w的左儿子颜色是红色右儿子颜色是黑色
 						if (!brother->right || brother->right->color == BLACK)
