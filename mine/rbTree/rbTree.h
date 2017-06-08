@@ -1,9 +1,9 @@
 /*************************************************************************
-    > File Name: rbTree.h
-    > Author: Feng
-    > Created Time: 2017年05月27日 星期六 15时20分40秒
-    > Content: rbTree
- ************************************************************************/
+> File Name: rbTree.h
+> Author: Feng
+> Created Time: 2017年05月27日 星期六 15时20分40秒
+> Content: rbTree
+************************************************************************/
 
 #pragma once
 
@@ -87,7 +87,7 @@ void rbtree<K>::levelout()
 	{
 		return;
 	}
-	
+
 	q.push(m_root);
 	while (!q.empty())
 	{
@@ -96,7 +96,7 @@ void rbtree<K>::levelout()
 			std::cout << " ";
 		}
 		totalheight--;
-		
+
 		node = q.front();
 		q.pop();
 		std::cout << node->key << "," << (node->color == RED ? "R" : "B");
@@ -104,7 +104,7 @@ void rbtree<K>::levelout()
 		{
 			cout << " ";
 		}
-		
+
 		curcount--;
 
 		if (node->left)
@@ -112,13 +112,13 @@ void rbtree<K>::levelout()
 			q.push(node->left);
 			nextcount++;
 		}
-		
+
 		if (node->right)
 		{
 			q.push(node->right);
 			nextcount++;
 		}
-		
+
 		if (curcount == 0)
 		{
 			curcount = nextcount;
@@ -135,7 +135,7 @@ int rbtree<K>::height(rbnode<K>* tree)
 	{
 		return 0;
 	}
-	
+
 	int left = height(tree->left);
 	int right = height(tree->right);
 
@@ -152,7 +152,7 @@ void rbtree<K>::printtree()
 		{
 			std::cout << "   ";
 		}
-		
+
 		printtree(m_root, i, total);
 		std::cout << std::endl;
 	}
@@ -165,7 +165,7 @@ void rbtree<K>::printtree(rbnode<K>* tree, int height, int totalheight)
 	{
 		return;
 	}
-	
+
 	if (height == 0)
 	{
 		std::cout << tree->key << "," << (tree->color == RED ? "R" : "B");
@@ -175,7 +175,7 @@ void rbtree<K>::printtree(rbnode<K>* tree, int height, int totalheight)
 		}
 		return;
 	}
-	
+
 	printtree(tree->left, height - 1, totalheight);
 	printtree(tree->right, height - 1, totalheight);
 }
@@ -208,7 +208,7 @@ void rbtree<K>::llrotate(rbnode<K>* node)
 	{
 		node->left->parent = node;
 	}
-	
+
 	x->right = node;
 	if (node == m_root)
 	{
@@ -304,7 +304,7 @@ void rbtree<K>::insert(K key)
 	}
 	dest->parent = parentdest;
 	m_size++;
-	
+
 	//插入完成，下来重新调整插入后的红黑树
 	while (true)
 	{
@@ -314,7 +314,7 @@ void rbtree<K>::insert(K key)
 			dest->color = BLACK;
 			return;
 		}
-		
+
 		//case2 dest节点的父节点颜色是黑色
 		if (dest->parent->color == BLACK)
 		{
@@ -358,10 +358,10 @@ void rbtree<K>::insert(K key)
 					}
 					else	//case5 RRb
 					{
-						 dest->parent->color = BLACK;
-						 grandparent(dest)->color = RED;
-						 rrrotate(grandparent(dest));
-						 return;
+						dest->parent->color = BLACK;
+						grandparent(dest)->color = RED;
+						rrrotate(grandparent(dest));
+						return;
 					}
 				}
 			}
@@ -372,7 +372,7 @@ void rbtree<K>::insert(K key)
 template <typename K>
 void rbtree<K>::remove(K key)
 {
-	rbcolor ycolor;
+	rbcolor destcolor;
 	rbnode<K>* parent = NULL;
 	rbnode<K>* brother = NULL;
 	rbnode<K>* dest = m_root;
@@ -387,7 +387,7 @@ void rbtree<K>::remove(K key)
 			dest = dest->right;
 		}
 	}
-	
+
 	//没有找到直接退出
 	if (!dest)
 	{
@@ -403,20 +403,9 @@ void rbtree<K>::remove(K key)
 		{
 			y = y->left;
 		}
-		
-		ycolor = y->color;
+
 		dest->key = y->key;
 		dest = y;	//重新指定要删除的节点
-	}
-
-	//如果最终要删除节点是root，那肯定这棵红黑树只有一个根节点，删除后直接退出
-	if (dest == m_root)
-	{
-		//这时候x肯定是NULL
-		m_root = NULL;
-		delete dest;
-		m_size--;
-		return;
 	}
 
 	//没有子节点归结到只有一个子节点的情况中去（只有一个为NULL的子节点），所以x有可能为空
@@ -430,14 +419,26 @@ void rbtree<K>::remove(K key)
 		x = dest->right;
 	}
 	parent = dest->parent;
+	destcolor = dest->color;
 
-	if (dest == dest->parent->left)
+	//如果最终要删除节点是root
+	if (dest == m_root)
 	{
-		dest->parent->left = x;
+		m_root = x;
 	}
 	else
 	{
-		dest->parent->right = x;
+		if (dest->parent)
+		{
+			if (dest == dest->parent->left)
+			{
+				dest->parent->left = x;
+			}
+			else
+			{
+				dest->parent->right = x;
+			}
+		}
 	}
 
 	if (x)
@@ -446,9 +447,9 @@ void rbtree<K>::remove(K key)
 	}
 	delete dest;
 	m_size--;
-	
+
 	//删除节点完成，开始调整红黑树，只有最终要删除的节点为黑色的时候才需要调整
-	if (ycolor == BLACK)
+	if (destcolor == BLACK)
 	{
 		if (x && x->color == RED)
 		{
@@ -465,7 +466,7 @@ void rbtree<K>::remove(K key)
 				{
 					brother = parent->right;
 					//case1 x兄弟w颜色是红色（隐含着x的父节点和w的两个儿子节点肯定是黑色）
-					//这里brother肯定不为NULL，因为ycolor是黑色，即表示最终删除节点dest兄
+					//这里brother肯定不为NULL，因为destcolor是黑色，即表示最终删除节点dest兄
 					//弟节点（即后来x节点替换了）肯定不为NULL
 					if (brother->color == RED)
 					{
@@ -474,44 +475,44 @@ void rbtree<K>::remove(K key)
 						rrrotate(parent);
 						brother = parent->right;
 					}
-		
-						//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
-						if ((!brother->left || brother->left->color == BLACK) 
-							&& (!brother->right || brother->right->color == BLACK))
-						{
-							brother->color = RED;
-							x = parent;
-							parent = x->parent;
-						}
-						else
-						{
-							//case3 x兄弟w颜色是黑色而且w的左儿子颜色是红色右儿子颜色是黑色
-							if (!brother->right || brother->right->color == BLACK)
-							{
-								if (brother->left)
-								{
-									brother->left->color = BLACK;
-								}
-								brother->color = RED;
-								llrotate(brother);
-								brother = parent->right;
-							}							
 
-							//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
-							/*if (brother && brother->right->color == RED)
-							{*/
-								//剩余的情况肯定是case4
-								//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
-								brother->color = parent->color;
-								parent->color = BLACK;
-								if (brother->right)
-								{
-									brother->right->color = BLACK;
-								}
-								rrrotate(parent);
-								x = m_root;
-							//}
+					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
+					if ((!brother->left || brother->left->color == BLACK) 
+						&& (!brother->right || brother->right->color == BLACK))
+					{
+						brother->color = RED;
+						x = parent;
+						parent = x->parent;
+					}
+					else
+					{
+						//case3 x兄弟w颜色是黑色而且w的左儿子颜色是红色右儿子颜色是黑色
+						if (!brother->right || brother->right->color == BLACK)
+						{
+							if (brother->left)
+							{
+								brother->left->color = BLACK;
+							}
+							brother->color = RED;
+							llrotate(brother);
+							brother = parent->right;
+						}							
+
+						//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
+						/*if (brother && brother->right->color == RED)
+						{*/
+						//剩余的情况肯定是case4
+						//case4 x兄弟w颜色是黑色而且w的右儿子颜色是红色，左儿子颜色随意
+						brother->color = parent->color;
+						parent->color = BLACK;
+						if (brother->right)
+						{
+							brother->right->color = BLACK;
 						}
+						rrrotate(parent);
+						x = m_root;
+						//}
+					}
 				}
 				else
 				{
@@ -537,11 +538,11 @@ void rbtree<K>::remove(K key)
 						//case3 x兄弟w颜色是黑色而且w的左儿子颜色是黑色右儿子颜色是红色
 						if (!brother->left || brother->left->color == BLACK)
 						{
-							if (!brother->left)
+							if (brother->right)
 							{
-								brother->left->color = RED;
+								brother->right->color = BLACK;
 							}
-							brother->color = BLACK;
+							brother->color = RED;
 							rrrotate(brother);
 							brother = parent->left;
 						}
@@ -549,16 +550,16 @@ void rbtree<K>::remove(K key)
 						//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
 						//if (brother->left->color == RED)
 						//{
-							//剩余的情况肯定是case4
-							//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
-							brother->color = parent->color;
-							parent->color = BLACK;
-							if (brother->left)
-							{
-								brother->left->color = BLACK;
-							}
-							llrotate(parent);
-							x = m_root;
+						//剩余的情况肯定是case4
+						//case4 x兄弟w颜色是黑色而且w的左儿子颜色是红色，右儿子颜色随意
+						brother->color = parent->color;
+						parent->color = BLACK;
+						if (brother->left)
+						{
+							brother->left->color = BLACK;
+						}
+						llrotate(parent);
+						x = m_root;
 						//}
 					}
 				}
