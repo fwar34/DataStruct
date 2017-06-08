@@ -476,7 +476,7 @@ void rbtree<K>::remove(K key)
 						brother = parent->right;
 					}
 
-					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
+					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（NULL视为黑色）
 					if ((!brother->left || brother->left->color == BLACK) 
 						&& (!brother->right || brother->right->color == BLACK))
 					{
@@ -525,7 +525,7 @@ void rbtree<K>::remove(K key)
 						llrotate(parent);
 						brother = parent->left;
 					}
-					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色（w肯定有两个子节点，因为x和被删除的节点都是黑色）
+					//case2 x兄弟w颜色是黑色而且w的两个儿子颜色都是黑色
 					if ((!brother->left || brother->left->color == BLACK) 
 						&& (!brother->right || brother->right->color == BLACK))
 					{
