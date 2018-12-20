@@ -11,7 +11,7 @@ using namespace std;
 
 void bubble(int32_t array[], uint32_t array_len)
 {
-    for (uint32_t i = 0; i < array_len; ++i) {
+    for (uint32_t i = 0; i < array_len - 1; ++i) {
         for (uint32_t j = 0; j < array_len - 1 - i; ++j) {
             if (array[j] > array[j + 1]) {
                 int32_t tmp = array[j];
