@@ -9,7 +9,7 @@
 
 using namespace std;
 
-template <typename T, typename cmp>
+template <typename T>
 class MaxHeap
 {
 public:
@@ -21,14 +21,17 @@ public:
     MaxHeap& operator=(const MaxHeap& other) = delete;
 
     ~MaxHeap();
-    void Initialize(T* t, int32_t len);
+    void BuildHeap(const T* t, int32_t len);
 
     const T& Max();
+    void Sink(int32_t i);
+    void Swim(int32_t i);
     void Push(const T& t);
     void Pop();
     int32_t capacity();
     int32_t size();
     bool Empty();
+    void Dump();
 
 private:
     void Resize();
@@ -70,7 +73,7 @@ void MaxHeap<T>::Resize()
 }
 
 template <typename T>
-MaxHeap<T>::MaxHeap(const MaxHeap&& other)
+MaxHeap<T>::MaxHeap(MaxHeap&& other)
 {
     if (this != &other) {
         heap_ = other.heap_;
@@ -100,6 +103,38 @@ MaxHeap<T>& MaxHeap<T>::operator=(MaxHeap&& other)
 }
 
 template <typename T>
+void MaxHeap<T>::Sink(int32_t i)
+{
+    T t = heap_[i];
+    int32_t child = 0;
+    while (2 * i <= size_) {
+        child = 2 * i;
+        if (child < size_ && heap_[child] < heap_[child + 1]) {
+            child++;
+        }
+
+        if (t < heap_[child]) {
+            heap_[i] = heap_[child];
+            i = child;
+        } else {
+            break;
+        }
+    }
+    heap_[i] = t;
+}
+
+template <typename T>
+void MaxHeap<T>::Swim(int32_t i)
+{
+    T t = heap_[i];
+    while (i > 1 && heap_[i] > heap_[i / 2]) {
+        heap_[i] = heap_[i / 2];
+        i = i / 2;
+    }
+    heap_[i] = t;
+}
+
+template <typename T>
 const T& MaxHeap<T>::Max()
 {
     return heap_[1];
@@ -108,41 +143,38 @@ const T& MaxHeap<T>::Max()
 template <typename T>
 void MaxHeap<T>::Push(const T& t)
 {
-    if (size_ == capacity_ - 1) {
-        Resize<T>();
+    if (size_ == capacity_) {
+        Resize();
     }
 
-    int32_t hole = size_ + 1;
-
-    while (hole > 1 && heap_[hole / 2] < t) {
-        heap_[hole] = heap_[hole / 2];
-        hole = hole / 2;
-    }
-    heap_[hole] = t;
+    heap_[++size_] = t;
+    Swim(size_);
 }
 
 template <typename T>
 void MaxHeap<T>::Pop()
 {
-    int32_t hole = 1;
-    int32_t child = 0;
-    heap_[hole] = heap_[size_];
-    T& t = heap_[hole];
-    size_--;
-    while (hole * 2 <= size_) {
-        child = hole * 2;
-        if (hole * 2 + 1 <= size_ && heap_[hole * 2] < heap_[hole * 2 + 1]) {
-            child++;
-        }
-
-        if (t < heap_[child]) {
-            heap_[hole] = heap_[child];
-        } else {
-            break;
-        }
-
-        hole = child;
-    }
-    heap_[hole] = t;
+    heap_[1] = heap_[size_--];
+    Sink(1);
 }
 
+template <typename T>
+void MaxHeap<T>::BuildHeap(const T* t, int32_t len)
+{
+    for (int32_t i = 1; i <= len; ++i) {
+        heap_[i] = t[i];
+    }
+    size_ = len;
+
+    for (int32_t i = size_ / 2; i > 0; i--) {
+        Sink(i);
+    }
+}
+
+template <typename T>
+void MaxHeap<T>::Dump()
+{
+    for (int32_t i = 1; i <= size_; ++i) {
+        cout << heap_[i] << " ";
+    }
+}
