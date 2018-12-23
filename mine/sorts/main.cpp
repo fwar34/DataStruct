@@ -6,7 +6,7 @@
  ************************************************************************/
 
 #include <iostream>
-#include "heap.h"
+#include "maxheap.h"
 
 using namespace std;
 

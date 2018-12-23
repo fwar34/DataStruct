@@ -107,7 +107,7 @@ void MaxHeap<T>::Sink(int32_t i)
 {
     T t = heap_[i];
     int32_t child = 0;
-    while (2 * i <= size_) {
+    while (2 * i <= size_) { //node i has leaf
         child = 2 * i;
         if (child < size_ && heap_[child] < heap_[child + 1]) {
             child++;
