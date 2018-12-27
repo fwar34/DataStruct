@@ -35,7 +35,9 @@ impl<T: Copy + PartialOrd + Display> MinHeap<T> {
 
     fn push(&mut self, t: &T) {
         self.heap.push(*t);
-        self.swim(self.heap.len() - 1);
+        let i = self.heap.len() - 1;
+        self.swim(i);
+        //self.swim(self.heap.len() - 1); //error self.heap.len() --> immutable borrow
     }
 
     fn pop(&mut self) {
@@ -88,6 +90,8 @@ fn main() {
     let mut heap1: MinHeap<i32> = MinHeap::new();
     heap1.build(&vec![-11, 3, 0, 88, -87, 1]);
     heap1.dump();
+
+    println!("ttttttttttttttttttttttt");
 
     let mut heap2: MinHeap<i32> = MinHeap::new();
     heap2.build(&[19, -11, 3, 0, 88, -87, 1]);
