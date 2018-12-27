@@ -5,17 +5,22 @@ struct MinHeap<T> {
 }
 
 impl<T: Copy + PartialOrd + Display> MinHeap<T> {
-    fn new(heap: &[T]) -> MinHeap<T> {
-        let minheap = MinHeap {
+    fn new() -> MinHeap<T> {
+        MinHeap {
             heap: Vec::new(),
-        };
+        }
+    }
 
-        minheap.heap.push(-1);
-        for i in heap {
-            minheap.heap.push(*i);
+    fn build(&mut self, arr: &[T]) {
+        self.heap.push(arr[0]);
+        for i in arr.iter() {
+            self.heap.push(*i);
         }
 
-        minheap
+        let ib = arr.len() / 2 + 1;
+        for i in (1..ib).rev() {
+            self.sink(i);
+        }
     }
 
     fn new2(capacity: usize) -> MinHeap<T> {
@@ -28,20 +33,24 @@ impl<T: Copy + PartialOrd + Display> MinHeap<T> {
         &self.heap[1]
     }
 
-    fn push(&self, t: &T) {
-
+    fn push(&mut self, t: &T) {
+        self.heap.push(*t);
+        self.swim(self.heap.len() - 1);
     }
 
-    fn pop(&self) {
-
+    fn pop(&mut self) {
+        if let Some(last) = self.heap.pop() {
+            self.heap[1] = last;
+            self.sink(1);
+        }
     }
 
     fn sink(&mut self, mut i: usize) {
         let t: T = self.heap[i].clone();
-        while 2 * i <= self.heap.len() { // node i have leaf
+        while 2 * i <= self.heap.len() - 1 { // node i have leaf
             let mut child = 2 * i;
             // node i have right leaf and right leaf is less than left leaf
-            if child < self.heap.len() && self.heap[child] > self.heap[child + 1] { 
+            if child < self.heap.len() - 1 && self.heap[child] > self.heap[child + 1] { 
                 child = child + 1;
             }
 
@@ -76,8 +85,11 @@ impl<T: Copy + PartialOrd + Display> MinHeap<T> {
 }
 
 fn main() {
-    let heap = MinHeap { heap: vec![100, -5, 9, 0, -108, 33] };
-    let heap = MinHeap::new(&vec![100, -5, 9, 0, -108, 33]);
-    let heap = MinHeap::new(&[100, -5, 9, 0, -108, 33]);
-    heap.dump();
+    let mut heap1: MinHeap<i32> = MinHeap::new();
+    heap1.build(&vec![-11, 3, 0, 88, -87, 1]);
+    heap1.dump();
+
+    let mut heap2: MinHeap<i32> = MinHeap::new();
+    heap2.build(&[19, -11, 3, 0, 88, -87, 1]);
+    heap2.dump();
 }
