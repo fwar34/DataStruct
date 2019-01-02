@@ -50,26 +50,29 @@ if __name__ == '__main__':
     print(q.Empty())
     print(q.Full())
 
-try:
-    q.Push(3)
-    print(q.Empty())
-    print(q.Full())
-    q.Push(4)
-    q.Push(5)
-    q.Push(6)
-    print(q.Empty())
-    print(q.Full())
+    try:
+        q.Push(3)
+        print(q.Empty())
+        print(q.Full())
+        q.Push(4)
+        q.Push(5)
+        q.Push(6)
+        print(q.Empty())
+        print(q.Full())
 
-    q.Pop()
-    print(q.Empty())
-    print(q.Full())
-    q.Pop()
-    q.Pop()
-    q.Pop()
-    print(q.Empty())
-    print(q.Full())
+        q.Pop()
+        print(q.Empty())
+        print(q.Full())
+        q.Pop()
+        q.Pop()
+        q.Pop()
+        print(q.Empty())
+        print(q.Full())
 
-    #queue already empty
-    q.Pop()
-except QError as e:
-    logging.exception(e)
+        #queue already empty
+        q.Pop()
+    except QError as e:
+        # 通过配置，logging还可以把错误记录到日志文件里，方便事后排查
+        logging.exception(e)
+
+    print('END')
