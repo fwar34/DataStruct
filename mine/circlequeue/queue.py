@@ -1,3 +1,14 @@
+import logging
+
+class QError(BaseException):
+    def __init__(self, value, message):
+        self.value = value
+        self.message = message
+
+    def __str__(self):
+        # return repr(self.message)
+        return self.message
+
 class Queue:
 
     def __init__(self, capacity):
@@ -16,14 +27,14 @@ class Queue:
 
     def Push(self, element):
         if self.Full():
-            return False
+            raise QError(-1, 'Queue full')
         else:
             self.back = (self.back + 1) % self.capacity
             self.queue[self.back] = element
 
     def Pop(self):
         if self.Empty():
-            return False
+            raise QError(-2, 'Queue empty')
         else:
             self.front = (self.front + 1) % self.capacity
 
@@ -39,6 +50,7 @@ if __name__ == '__main__':
     print(q.Empty())
     print(q.Full())
 
+try:
     q.Push(3)
     print(q.Empty())
     print(q.Full())
@@ -56,3 +68,8 @@ if __name__ == '__main__':
     q.Pop()
     print(q.Empty())
     print(q.Full())
+
+    #queue already empty
+    q.Pop()
+except QError as e:
+    logging.exception(e)
