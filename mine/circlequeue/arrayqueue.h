@@ -39,7 +39,7 @@ template <typename T>
 ArrayQueue<T>::ArrayQueue(uint32_t capacity)
 {
     queue_ = new T[capacity + 1];
-    queue_capacity_ = capacity;
+    queue_capacity_ = capacity + 1;
     queue_front_ = 0;
     queue_back_ = 0;
 }

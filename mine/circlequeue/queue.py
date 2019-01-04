@@ -15,8 +15,8 @@ class Queue:
         self.queue = []
         self.front = 0
         self.back = 0
-        self.capacity = capacity
-        for i in range(capacity):
+        self.capacity = capacity + 1
+        for i in range(capacity + 1):
             self.queue.append(0)
 
     def Front(self):
@@ -57,6 +57,7 @@ if __name__ == '__main__':
         q.Push(4)
         q.Push(5)
         q.Push(6)
+        q.Push(7)
         print(q.Empty())
         print(q.Full())
 
@@ -65,6 +66,9 @@ if __name__ == '__main__':
         print(q.Full())
         q.Pop()
         q.Pop()
+        q.Pop()
+        print(q.Empty())
+        print(q.Full())
         q.Pop()
         print(q.Empty())
         print(q.Full())

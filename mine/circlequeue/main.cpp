@@ -23,6 +23,7 @@ int main()
     queue.Push(4);
     queue.Push(5);
     queue.Push(6);
+    queue.Push(7);
     cout << queue.Empty() << endl;
     cout << queue.Full() << endl;
     cout << queue.Front() << endl;
@@ -30,6 +31,7 @@ int main()
 
     queue.Pop();
     cout << queue.Front() << endl;
+    queue.Pop();
     queue.Pop();
     queue.Pop();
     queue.Pop();
